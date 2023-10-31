@@ -1,0 +1,73 @@
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+class AnimatedColorPalette extends StatefulWidget {
+  const AnimatedColorPalette({super.key});
+
+  @override
+  State<AnimatedColorPalette> createState() => _AnimatedColorPaletteState();
+}
+
+class _AnimatedColorPaletteState extends State<AnimatedColorPalette> {
+  List<Color> currentPalette = generateRandomPalette();
+
+  static List<Color> generateRandomPalette() {
+    final random = Random();
+    return List.generate(
+      5,
+      (_) => Color.fromRGBO(
+        random.nextInt(256),
+        random.nextInt(256),
+        random.nextInt(256),
+        //  random.nextDouble()*.9,
+        1,
+      ),
+    );
+  }
+
+  int? newheight;
+  int? newwidth;
+  void setwidth() {
+    final random = Random();
+    newheight = random.nextInt(100);
+    newwidth = random.nextInt(100);
+  }
+
+  void regeneratePalette() {
+    setState(() {
+      currentPalette = generateRandomPalette();
+      setwidth();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Color Palette Generator'),
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (Color color in currentPalette)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 2000),
+                  curve: Curves.elasticOut,
+                  width:newheight?.toDouble() ?? 0.0 ,
+                  height: newwidth?.toDouble() ?? 0.0 ,
+                  color: color,
+                  margin: const EdgeInsets.all(8),
+                ),
+              ElevatedButton(
+                onPressed: regeneratePalette,
+                child: const Text('Generate New Palette'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
